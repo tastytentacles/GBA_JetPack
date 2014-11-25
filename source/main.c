@@ -6,9 +6,26 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
+typedef struct token token;
+struct token {
+	void			(*_script)(token*);
+	void			(*_addTag)(token*);
+	void			(*_callTag)(token*, char);
+
+	char			tagMap[8];
+	token*			map[8];
+};
+
+token newToken();
+
+void addTag(token* _target, char _tag);
+void callTag(char _tag);
 
 void invoke();
+void create_eSpace();
+void game_logic();
 
 int main(void) {
 	irqInit();
@@ -16,11 +33,36 @@ int main(void) {
 	invoke();
 	while (1) 
 	{
+		token firstPoint = newToken();
+
 		VBlankIntrWait();
 	}
 }
 
 
+token newToken() {
+	token _token;
+	_token._addTag = addTag;
+	_token._callTag = callTag;
+	return _token;
+}
+
+void addTag(token* _target, char _tag) {
+
+}
+
+void callTag(char _tag) {
+
+}
+
+
+void create_eSpace(token* comandPoint) {
+
+}
+
+void game_logic() {
+
+}
 
 void invoke() {
 	unsigned short* cp1 = (unsigned short*) 0x4000000;
