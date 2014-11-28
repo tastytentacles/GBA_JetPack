@@ -4,10 +4,6 @@
 #include <gba_interrupt.h>
 #include <gba_systemcalls.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "shoggoth.h"
 
 void invoke();
@@ -17,10 +13,12 @@ int main(void) {
 	irqInit();
 	irqEnable(IRQ_VBLANK);
 	invoke();
+
+	newToken(0, 10, 10);
+
 	while (1) 
 	{
-		newToken(0, 10, 10);
-
+		callTokenStack();
 		VBlankIntrWait();
 	}
 }
@@ -30,16 +28,16 @@ void game_logic() {
 	int n;
 	int nx = 16;
 	for (n = 0; n < nx; n++) {
-		
+
 	}
 }
 
 void invoke() {
 	// establish relevlent io and bg memmory
-	unsigned short* cp1 = (unsigned short*) 0x4000000;	// io part 1
-	unsigned short* cp2 = (unsigned short*) 0x4000004;	// io part 2
-	unsigned short* cp3 = (unsigned short*) 0x4000008;	// io part 3
-	cp1[0] = ((1 << 8) | (1 << 9) | (1 << 10) | (1 << 12) | (1 << 15));
+	unsigned short* cp1 = (unsigned short*) 0x4000000;	// i/o part 1
+	unsigned short* cp2 = (unsigned short*) 0x4000004;	// i/o part 2
+	unsigned short* cp3 = (unsigned short*) 0x4000008;	// i/o part 3
+	cp1[0] = ((1 << 8) | (1 << 9) | (1 << 10) | (1 << 12));
 	cp2[0] = ((1 << 3));
 	cp3[0] = ((10 << 8));
 
@@ -77,13 +75,16 @@ void invoke() {
 
 	// read in sprites from sprite importer output file
 	extern unsigned int omegaSprite[4096];
-	unsigned int* spritePoint = (unsigned int*) 0x06000000;
+	unsigned int* sp = (unsigned int*) 0x06000000;
 	int n;
 	for (n = 0; n < 2048; n++) {
-		spritePoint[n] = omegaSprite[n];
+		sp[n] = omegaSprite[n];
 	}
-	spritePoint = (unsigned int*) 0x06010000;
+	sp = (unsigned int*) 0x06010000;
 	for (n = 0; n < 2048; n++) {
-		spritePoint[n] = omegaSprite[n + 2048];
+		sp[n] = omegaSprite[n + 2048];
 	}
+
+	sp = NULL;
+	free(sp);
 }
