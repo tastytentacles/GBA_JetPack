@@ -16,8 +16,8 @@ void newToken(int tIndex, int tx, int ty) {
 		},
 
 		._vec = {
-			._speedx = 0.1,
-			._speedy = 0.5
+			._speedx = 0,
+			._speedy = 0
 		},
 
 		._obj = {
@@ -32,6 +32,10 @@ void newToken(int tIndex, int tx, int ty) {
 	};
 
 	gameStack[tIndex] = _token;
+}
+
+void t_addScript(int tIndex, void (*tScript)) {
+	gameStack[tIndex]._script = tScript;
 }
 
 // temp

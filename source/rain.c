@@ -4,6 +4,7 @@
 #include <gba_interrupt.h>
 #include <gba_systemcalls.h>
 
+// #include "azathoth.h"
 #include "shoggoth.h"
 
 void invoke();
@@ -14,7 +15,9 @@ int main(void) {
 	irqEnable(IRQ_VBLANK);
 	invoke();
 
-	newToken(0, 10, 10);
+	// newToken(0, 10, 10);
+	// extern playerScript(token* __self);
+	// t_addScript(0, playerScript);
 
 	while (1) 
 	{
@@ -49,8 +52,8 @@ void invoke() {
 	free(cp3);
 
 	// establish palet
-	unsigned short* pp = (unsigned short*) 0x5000000;	// tile memmory block
-	unsigned short* spp = (unsigned short*) 0x5000200;	// obj tile memmory block
+	unsigned short* pp = (unsigned short*) 0x5000000;	// tile memmory palet block
+	unsigned short* spp = (unsigned short*) 0x5000200;	// obj tile memmory palet block
 
 	spp[1] = pp[1] = RGB5(8, 8, 8);			// gray
 	spp[2] = pp[2] = RGB5(15, 15, 31);		// blue 1

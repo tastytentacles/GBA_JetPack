@@ -6,6 +6,9 @@
 	  \____/                     |_|                                       
 */
 
+#ifndef _SHOGGOTH_
+#define _SHOGGOTH_
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -56,4 +59,6 @@ struct token {
 
 token gameStack[16];
 void newToken();
+void t_addScript(int tIndex, void (*tScript));
 void callTokenStack();
+#endif
