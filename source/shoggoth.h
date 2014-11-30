@@ -15,6 +15,7 @@
 
 typedef struct point2D point2D;
 typedef struct simpleVec2D simpleVec2D;
+typedef struct tileProfile tileProfile;
 typedef struct objHandle objHandle;
 typedef struct spriteHandle spriteHandle;
 // animated sprite handle
@@ -30,6 +31,14 @@ struct simpleVec2D
 {
 	float			_speedx;
 	float			_speedy;	
+};
+
+struct tileProfile
+{
+	int				_x;
+	int				_y;
+	int				_width;
+	int				_height;
 };
 
 struct spriteHandle
@@ -54,11 +63,15 @@ struct token {
 	point2D			_pos;
 	simpleVec2D		_vec;
 	objHandle		_obj;
-	void			(*_script)(token*);
+	void			(*_script)(token *);
 };
 
 token gameStack[16];
 void newToken();
+void t_setSprite(int tIndex, int tSIndex, int tSSize, int tSShape);
 void t_addScript(int tIndex, void (*tScript));
+void setMapPoint(int _x, int _y, int tIndex, int memBlock);
+void setMapPoint_L(int _x, int _y, tileProfile* _tile, int memBlock);
+void setMapBox(int _x, int _y, int _width, int _height, int tIndex, int memBlock);
 void callTokenStack();
 #endif
