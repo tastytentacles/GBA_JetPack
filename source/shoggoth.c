@@ -8,11 +8,18 @@
 
 #include "shoggoth.h"
 
-void newToken(int tIndex, int tx, int ty) {
+int id[3] = {0, 16, 64};
+
+void newToken(int tIndex, int stackID, int tx, int ty) {
 	token _token = {
 		._pos = {
 			._x = tx,
 			._y = ty
+		},
+
+		._firePos = {
+			._x = 0,
+			._y = 0
 		},
 
 		._vec = {
@@ -21,7 +28,7 @@ void newToken(int tIndex, int tx, int ty) {
 		},
 
 		._obj = {
-			._pointer = 0x07000000 + (8 * tIndex),
+			._pointer = 0x07000000 + (8 * (tIndex + id[stackID])),
 
 			._sprite = {
 				._index = 0,
@@ -31,17 +38,57 @@ void newToken(int tIndex, int tx, int ty) {
 		}
 	};
 
-	gameStack[tIndex] = _token;
+	switch (stackID) {
+		case 0 :
+			gameStack[tIndex] = _token;
+			break;
+
+		case 1 :
+			bulletStack[tIndex] = _token;
+			break;
+
+		case 2 :
+			particalStack[tIndex] = _token;
+			break;
+	}
 }
 
-void t_setSprite(int tIndex, int tSIndex, int tSSize, int tSShape) {
-	gameStack[tIndex]._obj._sprite._index = tSIndex;
-	gameStack[tIndex]._obj._sprite._size = tSSize;
-	gameStack[tIndex]._obj._sprite._shape = tSShape;
+void t_setSprite(int tIndex, int stackID, int tSIndex, int tSSize, int tSShape) {
+	switch (stackID) {
+		case 0 :
+			gameStack[tIndex]._obj._sprite._index = tSIndex;
+			gameStack[tIndex]._obj._sprite._size = tSSize;
+			gameStack[tIndex]._obj._sprite._shape = tSShape;
+			break;
+
+		case 1 :
+			bulletStack[tIndex]._obj._sprite._index = tSIndex;
+			bulletStack[tIndex]._obj._sprite._size = tSSize;
+			bulletStack[tIndex]._obj._sprite._shape = tSShape;
+			break;
+
+		case 2 :
+			particalStack[tIndex]._obj._sprite._index = tSIndex;
+			particalStack[tIndex]._obj._sprite._size = tSSize;
+			particalStack[tIndex]._obj._sprite._shape = tSShape;
+			break;
+	}
 }
 
-void t_addScript(int tIndex, void (*tScript)) {
-	gameStack[tIndex]._script = tScript;
+void t_addScript(int tIndex, int stackID, void (*tScript)) {
+	switch (stackID) {
+		case 0 :
+			gameStack[tIndex]._script = tScript;
+			break;
+
+		case 1 :
+			bulletStack[tIndex]._script = tScript;
+			break;
+
+		case 2 :
+			particalStack[tIndex]._script = tScript;
+			break;
+	}
 }
 
 void setMapPoint(int _x, int _y, int tIndex, int memBlock) {
@@ -108,4 +155,44 @@ void callTokenStack() {
 			_hand[2] = ((gameStack[n]._obj._sprite._index << 0));
 		}
 	}
+
+	for (n = 0; n < 48; n++) {
+		bulletStack[n]._pos._x += bulletStack[n]._vec._speedx;
+		bulletStack[n]._pos._y += bulletStack[n]._vec._speedy;
+
+		if (bulletStack[n]._script != NULL) {
+			bulletStack[n]._script(&bulletStack[n]); // exicute obj script
+		}
+
+		// right changes to obj into memmory
+		if (bulletStack[n]._obj._pointer != 0) {
+			_hand = (unsigned char*) bulletStack[n]._obj._pointer;
+			_hand[0] = ((slashRound(bulletStack[n]._pos._y) << 0) |
+				(bulletStack[n]._obj._sprite._shape << 14));
+			_hand[1] = ((slashRound(bulletStack[n]._pos._x) << 0) |
+				(bulletStack[n]._obj._sprite._size << 14));
+			_hand[2] = ((bulletStack[n]._obj._sprite._index << 0));
+		}
+	}
+
+	for (n = 0; n < 64; n++) {
+		particalStack[n]._pos._x += particalStack[n]._vec._speedx;
+		particalStack[n]._pos._y += particalStack[n]._vec._speedy;
+
+		if (particalStack[n]._script != NULL) {
+			particalStack[n]._script(&particalStack[n]); // exicute obj script
+		}
+
+		// right changes to obj into memmory
+		if (particalStack[n]._obj._pointer != 0) {
+			_hand = (unsigned char*) particalStack[n]._obj._pointer;
+			_hand[0] = ((slashRound(particalStack[n]._pos._y) << 0) |
+				(particalStack[n]._obj._sprite._shape << 14));
+			_hand[1] = ((slashRound(particalStack[n]._pos._x) << 0) |
+				(particalStack[n]._obj._sprite._size << 14));
+			_hand[2] = ((particalStack[n]._obj._sprite._index << 0));
+		}
+	}
+	_hand = NULL;
+	free(_hand);
 }

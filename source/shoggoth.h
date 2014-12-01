@@ -61,15 +61,21 @@ struct objHandle
 
 struct token {
 	point2D			_pos;
+	point2D			_firePos;
 	simpleVec2D		_vec;
 	objHandle		_obj;
 	void			(*_script)(token *);
 };
 
+int id[3];
+// int id[] = {0, 16, 64};
+
 token gameStack[16];
-void newToken();
-void t_setSprite(int tIndex, int tSIndex, int tSSize, int tSShape);
-void t_addScript(int tIndex, void (*tScript));
+token bulletStack[48];
+token particalStack[64];
+void newToken(int tIndex, int stackID, int tx, int ty);
+void t_setSprite(int tIndex, int stackID, int tSIndex, int tSSize, int tSShape);
+void t_addScript(int tIndex, int stackID, void (*tScript));
 void setMapPoint(int _x, int _y, int tIndex, int memBlock);
 void setMapPoint_L(int _x, int _y, tileProfile* _tile, int memBlock);
 void setMapBox(int _x, int _y, int _width, int _height, int tIndex, int memBlock);
