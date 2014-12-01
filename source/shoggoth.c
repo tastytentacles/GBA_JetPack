@@ -44,15 +44,24 @@ void t_addScript(int tIndex, void (*tScript)) {
 	gameStack[tIndex]._script = tScript;
 }
 
-// legacy
-// void setMapPoint(int _x, int _y, int tIndex, int memBlock) {
-// 	unsigned short* ap = (unsigned short*) 0x06000000;
-// 	ap = ap + (0x400 * memBlock);
-// 	int _n = (_y * 32) + _x;
-// 	ap[_n] = tIndex;
-// 	ap = NULL;
-// 	free(ap);
-// }
+void setMapPoint(int _x, int _y, int tIndex, int memBlock) {
+	unsigned short* ap = (unsigned short*) 0x06000000;
+	ap = ap + (0x400 * memBlock);
+	int _n = (_y * 32) + _x;
+	ap[_n] = tIndex;
+	ap = NULL;
+	free(ap);
+}
+
+// legacy, needs rerighting
+void setMapBox(int _x, int _y, int _width, int _height, int tIndex, int memBlock) {
+	int nx, ny;
+	for (nx = 0; nx < _width; nx++) {
+		for (ny = 0; ny < _height; ny++) {
+			setMapPoint(_x + nx, _y + ny, tIndex, memBlock);
+		}
+	}
+}
 
 void setMapPoint_L(int _x, int _y, tileProfile* _tile, int memBlock) {
 	unsigned short* ap = (unsigned short*) 0x06000000;
@@ -67,16 +76,6 @@ void setMapPoint_L(int _x, int _y, tileProfile* _tile, int memBlock) {
 	ap = NULL;
 	free(ap);
 }
-
-// legacy
-// void setMapBox(int _x, int _y, int _width, int _height, int tIndex, int memBlock) {
-// 	int nx, ny;
-// 	for (nx = 0; nx < _width; nx++) {
-// 		for (ny = 0; ny < _height; ny++) {
-// 			setMapPoint(_x + nx, _y + ny, tIndex, memBlock);
-// 		}
-// 	}
-// }
 
 // temp
 unsigned int slashRound(float q) {

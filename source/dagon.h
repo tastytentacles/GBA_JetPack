@@ -6,18 +6,21 @@
 	  \____/                     |_|                                       
 */
 
-#include "dagon.h"
+#ifndef _DAGON_
+#define _DAGON_
+
+#include <gba_console.h>
+#include <gba_video.h>
+#include <gba_interrupt.h>
+#include <gba_systemcalls.h>
 #include "shoggoth.h"
+#include "azathoth.h"
 
-int main() {
-	irqInit();
-	irqEnable(IRQ_VBLANK);
-	invoke();
-	game_init();
+void invoke();
+void game_init();
+void game_logic();
 
-	while (1) 
-	{
-		game_logic();
-		VBlankIntrWait();
-	}
-}
+float bg_speed[3];
+float bg_pos[3];
+void bgScroll();
+#endif

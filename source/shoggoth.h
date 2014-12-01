@@ -73,5 +73,6 @@ void t_addScript(int tIndex, void (*tScript));
 void setMapPoint(int _x, int _y, int tIndex, int memBlock);
 void setMapPoint_L(int _x, int _y, tileProfile* _tile, int memBlock);
 void setMapBox(int _x, int _y, int _width, int _height, int tIndex, int memBlock);
+unsigned int slashRound(float q);
 void callTokenStack();
 #endif

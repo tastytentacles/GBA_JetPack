@@ -15,5 +15,5 @@ void playerScript(token* __self) {
 	// u16 keyUp = KeysUp();
 
 	// __self->_vec._speedx += (keyDown >> 7);
-	__self->_vec._speedx += 0.05;
+	// __self->_vec._speedx += 0.03;
 }
