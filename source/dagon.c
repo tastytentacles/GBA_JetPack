@@ -42,19 +42,19 @@ void invoke() {
 	spp[5] = pp[5] = RGB5(20, 31, 20);		// green 1
 	spp[6] = pp[6] = RGB5(10, 31, 10);		// green 2
 	spp[7] = pp[7] = RGB5(0, 31, 0);		// green 3
-	spp[8] = pp[8] = RGB5(28, 14, 0);		// orange 1
-	spp[9] = pp[9] = RGB5(24, 10, 0);		// orange 2
-	spp[10] = pp[10] = RGB5(20, 6, 0);		// orange 3
-	spp[11] = pp[11] = RGB5(28, 28, 28);	// white 1
-	spp[12] = pp[12] = RGB5(20, 20, 20);	// white 2
-	spp[13] = pp[13] = RGB5(10, 10, 10);	// white 3
+	spp[8] = RGB5(28, 14, 0);				// orange 1
+	spp[9] = RGB5(24, 10, 0);				// orange 2
+	spp[10] = RGB5(20, 6, 0);				// orange 3
+	spp[11] = RGB5(28, 28, 28);				// white 1
+	spp[12] = RGB5(20, 20, 20);				// white 2
+	spp[13] = RGB5(10, 10, 10);				// white 3
 	spp[14] = pp[14] = RGB5(31, 0, 0);		// red 1
 	spp[15] = pp[15] = RGB5(16, 0, 0);		// red 2
 
-	pp[17] = RGB5(25, 25, 31);
-	pp[18] = RGB5(20, 20, 25);
-	pp[19] = RGB5(15, 15, 20);
-	pp[20] = RGB5(10, 10, 15);
+	pp[8] = RGB5(25, 25, 31);				// sky blue 1
+	pp[9] = RGB5(20, 20, 31);				// sky blue 2
+	pp[10] = RGB5(15, 15, 31);				// sky blue 3
+	pp[11] = RGB5(10, 10, 31);				// sky blue 4
 
 	pp = NULL;
 	free(pp);
@@ -102,9 +102,9 @@ void game_init() {
 	for (n = 0; n < 16; n++)
 		{ setMapPoint_L(n * 2, 18, &ground, 10); }
 
-	newToken(0, 32, 32);
-	t_setSprite(0, 1, 0, 1);
-	t_addScript(0, playerScript);
+	// newToken(0, 32, 32);
+	// t_setSprite(0, 1, 0, 1);
+	// t_addScript(0, playerScript);
 }
 
 void game_logic() {
@@ -113,19 +113,21 @@ void game_logic() {
 	bgScroll();
 }
 
-float bg_speed[] = {1.5, 0.4, 0.1};
-float bg_pos[] = {0.0, 0.0, 0.0};
+float bg_speed[] = {1.5, 0.4, 0.1, 0.05};
+float bg_pos[] = {0.0, 0.0, 0.0, 0.0};
 void bgScroll() {
 	unsigned short* bg0 = (unsigned short*) 0x4000010;
 	unsigned short* bg1 = (unsigned short*) 0x4000014;
 	unsigned short* bg2 = (unsigned short*) 0x4000018;
+	unsigned short* bg3 = (unsigned short*) 0x400001C;
 
 	int n;
-	for (n = 0; n < 3; n++) {
+	for (n = 0; n < 4; n++) {
 		bg_pos[n] += bg_speed[n];
 	}
 	
 	bg0[0] = slashRound(bg_pos[0]);
 	bg1[0] = slashRound(bg_pos[1]);
 	bg2[0] = slashRound(bg_pos[2]);
+	bg3[0] = slashRound(bg_pos[3]);
 }
