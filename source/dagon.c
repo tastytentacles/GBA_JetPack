@@ -102,9 +102,9 @@ void game_init() {
 	for (n = 0; n < 16; n++)
 		{ setMapPoint_L(n * 2, 18, &ground, 10); }
 
-	newToken(0, 2, 32, 32);
-	t_setSprite(0, 2, 1, 0, 1);
-	t_addScript(0, 2, playerScript);
+	newToken(0, 0, 32, 32);
+	t_setSprite(0, 0, 1, 0, 1);
+	t_addScript(0, 0, playerScript);
 }
 
 void game_logic() {

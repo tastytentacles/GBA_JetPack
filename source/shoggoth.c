@@ -39,56 +39,36 @@ void newToken(int tIndex, int stackID, int tx, int ty) {
 	};
 
 	switch (stackID) {
-		case 0 :
-			gameStack[tIndex] = _token;
-			break;
-
-		case 1 :
-			bulletStack[tIndex] = _token;
-			break;
-
-		case 2 :
-			particalStack[tIndex] = _token;
-			break;
+		case 0 : gameStack[tIndex] = _token; break;
+		case 1 : bulletStack[tIndex] = _token; break;
+		case 2 : particalStack[tIndex] = _token; break;
 	}
 }
 
 void t_setSprite(int tIndex, int stackID, int tSIndex, int tSSize, int tSShape) {
+	token* _hand;
 	switch (stackID) {
-		case 0 :
-			gameStack[tIndex]._obj._sprite._index = tSIndex;
-			gameStack[tIndex]._obj._sprite._size = tSSize;
-			gameStack[tIndex]._obj._sprite._shape = tSShape;
-			break;
-
-		case 1 :
-			bulletStack[tIndex]._obj._sprite._index = tSIndex;
-			bulletStack[tIndex]._obj._sprite._size = tSSize;
-			bulletStack[tIndex]._obj._sprite._shape = tSShape;
-			break;
-
-		case 2 :
-			particalStack[tIndex]._obj._sprite._index = tSIndex;
-			particalStack[tIndex]._obj._sprite._size = tSSize;
-			particalStack[tIndex]._obj._sprite._shape = tSShape;
-			break;
+		case 0 : _hand = &gameStack[tIndex]; break;
+		case 1 : _hand = &bulletStack[tIndex]; break;
+		case 2 : _hand = &particalStack[tIndex]; break;
+		default : _hand = NULL; break;
 	}
+
+	_hand->_obj._sprite._index = tSIndex;
+	_hand->_obj._sprite._size = tSSize;
+	_hand->_obj._sprite._shape = tSShape;
 }
 
 void t_addScript(int tIndex, int stackID, void (*tScript)) {
+	token* _hand;
 	switch (stackID) {
-		case 0 :
-			gameStack[tIndex]._script = tScript;
-			break;
-
-		case 1 :
-			bulletStack[tIndex]._script = tScript;
-			break;
-
-		case 2 :
-			particalStack[tIndex]._script = tScript;
-			break;
+		case 0 : _hand = &gameStack[tIndex]; break;
+		case 1 : _hand = &bulletStack[tIndex]; break;
+		case 2 : _hand = &particalStack[tIndex]; break;
+		default : _hand = NULL; break;
 	}
+
+	_hand->_script = tScript;
 }
 
 void setMapPoint(int _x, int _y, int tIndex, int memBlock) {
