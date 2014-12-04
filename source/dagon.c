@@ -56,6 +56,11 @@ void invoke() {
 	pp[10] = RGB5(15, 15, 31);				// sky blue 3
 	pp[11] = RGB5(10, 10, 31);				// sky blue 4
 
+	pp[24] = RGB5(25, 25, 31);				// sky blue 1
+	pp[25] = RGB5(20, 20, 31);				// sky blue 2
+	pp[26] = RGB5(15, 15, 31);				// sky blue 3
+	pp[27] = RGB5(10, 10, 31);				// sky blue 4
+
 	pp = NULL;
 	free(pp);
 	spp = NULL;
@@ -78,15 +83,15 @@ void invoke() {
 }
 
 void game_init() {
-	setMapBox(0, 16, 32, 2, 6, 13);
-	setMapBox(0, 14, 32, 2, 38, 13);
-	setMapBox(0, 12, 32, 2, 70, 13);
-	setMapBox(0, 10, 32, 2, 7, 13);
-	setMapBox(0, 8, 32, 2, 39, 13);
-	setMapBox(0, 6, 32, 2, 71, 13);
-	setMapBox(0, 4, 32, 2, 8, 13);
-	setMapBox(0, 2, 32, 2, 40, 13);
-	setMapBox(0, 0, 32, 2, 72, 13);
+	setMapBox(0, 16, 32, 2, 6, 1, 13);
+	setMapBox(0, 14, 32, 2, 38, 1, 13);
+	setMapBox(0, 12, 32, 2, 70, 1, 13);
+	setMapBox(0, 10, 32, 2, 7, 1, 13);
+	setMapBox(0, 8, 32, 2, 39, 1, 13);
+	setMapBox(0, 6, 32, 2, 71, 1, 13);
+	setMapBox(0, 4, 32, 2, 8, 1, 13);
+	setMapBox(0, 2, 32, 2, 40, 1, 13);
+	setMapBox(0, 0, 32, 2, 72, 1, 13);
 
 	tileProfile smallMount = {1, 0, 2, 1};
 	tileProfile bigMount = {2, 1, 4, 3};
@@ -94,13 +99,13 @@ void game_init() {
 	
 	int n;
 	for (n = 0; n < 8; n++)
-		{ setMapPoint_L(n * 4, 16, &bigMount, 12); }
+		{ setMapPoint_L(n * 4, 16, &bigMount, 0, 12); }
 
 	for (n = 0; n < 16; n++)
-		{ setMapPoint_L(n * 2, 17, &smallMount, 11); }
+		{ setMapPoint_L(n * 2, 17, &smallMount, 0, 11); }
 
 	for (n = 0; n < 16; n++)
-		{ setMapPoint_L(n * 2, 18, &ground, 10); }
+		{ setMapPoint_L(n * 2, 18, &ground, 0, 11); }
 
 	newToken(0, 0, 32, 32);
 	t_setSprite(0, 0, 1, 0, 1);
@@ -113,21 +118,25 @@ void game_logic() {
 	bgScroll();
 }
 
-float bg_speed[] = {1.5, 0.4, 0.1, 0.05};
-float bg_pos[] = {0.0, 0.0, 0.0, 0.0};
+float bg_speed[] = {1.25, 0.65, 0.1};
+float bg_pos[] = {0.0, 0.0, 0.0};
 void bgScroll() {
-	unsigned short* bg0 = (unsigned short*) 0x4000010;
+	// unsigned short* bg0 = (unsigned short*) 0x4000010;
 	unsigned short* bg1 = (unsigned short*) 0x4000014;
 	unsigned short* bg2 = (unsigned short*) 0x4000018;
 	unsigned short* bg3 = (unsigned short*) 0x400001C;
 
 	int n;
-	for (n = 0; n < 4; n++) {
+	for (n = 0; n < 3; n++) {
 		bg_pos[n] += bg_speed[n];
+
+		if (bg_pos[n] > 256) {
+			bg_pos[n] = 0;
+		}
 	}
 	
-	bg0[0] = slashRound(bg_pos[0]);
-	bg1[0] = slashRound(bg_pos[1]);
-	bg2[0] = slashRound(bg_pos[2]);
-	bg3[0] = slashRound(bg_pos[3]);
+	// bg0[0] = slashRound(bg_pos[0]);
+	bg1[0] = slashRound(bg_pos[0]);
+	bg2[0] = slashRound(bg_pos[1]);
+	bg3[0] = slashRound(bg_pos[2]);
 }

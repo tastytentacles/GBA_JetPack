@@ -11,7 +11,7 @@
 
 float speedInhibitor = 1.5;
 float shipSpeed = 0.25;
-float shipFriction = 0.95;
+float shipFriction = 0.85;
 
 bool dpad_up = false;
 bool dpad_down = false;
@@ -21,7 +21,6 @@ void playerScript(token* __self) {
 	scanKeys();
 	u16 keyDown = keysDown();
 	u16 keyUp = keysUp();
-
 
 	switch (keyDown) {
 		case KEY_UP :

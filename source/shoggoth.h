@@ -76,9 +76,9 @@ token particalStack[64];
 void newToken(int tIndex, int stackID, int tx, int ty);
 void t_setSprite(int tIndex, int stackID, int tSIndex, int tSSize, int tSShape);
 void t_addScript(int tIndex, int stackID, void (*tScript));
-void setMapPoint(int _x, int _y, int tIndex, int memBlock);
-void setMapPoint_L(int _x, int _y, tileProfile* _tile, int memBlock);
-void setMapBox(int _x, int _y, int _width, int _height, int tIndex, int memBlock);
+void setMapPoint(int _x, int _y, int tIndex, int palette, int memBlock);
+void setMapPoint_L(int _x, int _y, tileProfile* _tile, int palette, int memBlock);
+void setMapBox(int _x, int _y, int _width, int _height, int tIndex, int palette, int memBlock);
 unsigned int slashRound(float q);
 void callTokenStack();
 #endif
