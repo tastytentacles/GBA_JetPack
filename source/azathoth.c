@@ -21,51 +21,28 @@ void playerScript(token* __self) {
 	scanKeys();
 	u16 keyDown = keysDown();
 	u16 keyUp = keysUp();
+	u16 keyHeld = keysHeld();
 
-	switch (keyDown) {
-		case KEY_UP :
-			dpad_up = true;
-			break;
+	if (keyDown == KEY_RIGHT)
+		{ dpad_right = true; }
+	if (keyDown == KEY_LEFT)
+		{ dpad_left = true; }
+	if (keyDown == KEY_UP)
+		{ dpad_up = true; }
+	if (keyDown == KEY_DOWN)
+		{ dpad_down = true; }
 
-		case KEY_DOWN :
-			dpad_down = true;
-			break;
-	}
-
-	switch (keyDown) {
-		case KEY_LEFT :
-			dpad_left = true;
-			break;
-
-		case KEY_RIGHT :
-			dpad_right = true;
-			break;
-	}
-
-	switch (keyUp) {
-		case KEY_UP :
-			dpad_up = false;
-			break;
-
-		case KEY_DOWN :
-			dpad_down = false;
-			break;
-	}
-
-	switch (keyUp) {
-		case KEY_LEFT :
-			dpad_left = false;
-			break;
-
-		case KEY_RIGHT :
-			dpad_right = false;
-			break;
-	}
-
+	if (keyUp == KEY_RIGHT)
+		{ dpad_right = false; }
+	if (keyUp == KEY_LEFT)
+		{ dpad_left = false; }
+	if (keyUp == KEY_UP)
+		{ dpad_up = false; }
+	if (keyUp == KEY_DOWN)
+		{ dpad_down = false; }
 
 	__self->_vec._speedy += (dpad_down - dpad_up) * shipSpeed;
 	__self->_vec._speedx += (dpad_right - dpad_left) * shipSpeed;
-
 
 	if (__self->_vec._speedx > 0.01 || __self->_vec._speedx < -0.01) {
 		__self->_vec._speedx *= shipFriction;

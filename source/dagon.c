@@ -19,9 +19,9 @@ void invoke() {
 	cp1[0] = ((1 << 8) | (1 << 9) | (1 << 10) | (1 << 11) | (1 << 12));
 	cp2[0] = ((1 << 3));
 	bgc0[0] = ((10 << 8));
-	bgc1[0] = ((11 << 8));
-	bgc2[0] = ((12 << 8));
-	bgc3[0] = ((13 << 8));
+	bgc1[0] = ((2 << 0) | (11 << 8));
+	bgc2[0] = ((2 << 0) | (12 << 8));
+	bgc3[0] = ((2 << 0) | (13 << 8));
 
 	cp1 = cp2 = NULL;
 	free(cp1);
@@ -35,6 +35,7 @@ void invoke() {
 	unsigned short* pp = (unsigned short*) 0x5000000;	// tile memmory palet block
 	unsigned short* spp = (unsigned short*) 0x5000200;	// obj tile memmory palet block
 
+	// palatte 1
 	spp[1] = pp[1] = RGB5(8, 8, 8);			// gray
 	spp[2] = pp[2] = RGB5(15, 15, 31);		// blue 1
 	spp[3] = pp[3] = RGB5(10, 10, 31);		// blue 2
@@ -56,10 +57,15 @@ void invoke() {
 	pp[10] = RGB5(15, 15, 31);				// sky blue 3
 	pp[11] = RGB5(10, 10, 31);				// sky blue 4
 
-	pp[24] = RGB5(25, 25, 31);				// sky blue 1
-	pp[25] = RGB5(20, 20, 31);				// sky blue 2
-	pp[26] = RGB5(15, 15, 31);				// sky blue 3
-	pp[27] = RGB5(10, 10, 31);				// sky blue 4
+	// palatte 2
+	pp = (unsigned short*) 0x5000020;
+
+	pp[1] = RGB5(0, 0, 0);
+	pp[1] = RGB5(31, 31, 31);
+	pp[8] = RGB5(25, 25, 31);				// sky blue 1
+	pp[9] = RGB5(20, 20, 31);				// sky blue 2
+	pp[10] = RGB5(15, 15, 31);				// sky blue 3
+	pp[11] = RGB5(10, 10, 31);				// sky blue 4
 
 	pp = NULL;
 	free(pp);
@@ -96,6 +102,7 @@ void game_init() {
 	tileProfile smallMount = {1, 0, 2, 1};
 	tileProfile bigMount = {2, 1, 4, 3};
 	tileProfile ground = {0, 1, 2, 2};
+	tileProfile scoreText = {9, 1, 5, 1};
 	
 	int n;
 	for (n = 0; n < 8; n++)
@@ -107,6 +114,8 @@ void game_init() {
 	for (n = 0; n < 16; n++)
 		{ setMapPoint_L(n * 2, 18, &ground, 0, 11); }
 
+	setMapPoint_L(1, 1, &scoreText, 1, 10);
+
 	newToken(0, 0, 32, 32);
 	t_setSprite(0, 0, 1, 0, 1);
 	t_addScript(0, 0, playerScript);
@@ -114,7 +123,6 @@ void game_init() {
 
 void game_logic() {
 	callTokenStack();
-
 	bgScroll();
 }
 

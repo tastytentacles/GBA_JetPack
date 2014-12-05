@@ -137,7 +137,7 @@ void callTokenStack() {
 					(_swapStack[i][n]._obj._sprite._shape << 14));
 				_hand[1] = ((slashRound(_swapStack[i][n]._pos._x) << 0) |
 					(_swapStack[i][n]._obj._sprite._size << 14));
-				_hand[2] = ((_swapStack[i][n]._obj._sprite._index << 0));
+				_hand[2] = ((_swapStack[i][n]._obj._sprite._index << 0) | (1 << 10));
 			}
 		}
 	}

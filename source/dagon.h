@@ -20,7 +20,7 @@ void invoke();
 void game_init();
 void game_logic();
 
-float bg_speed[4];
-float bg_pos[4];
+float bg_speed[3];
+float bg_pos[3];
 void bgScroll();
 #endif
