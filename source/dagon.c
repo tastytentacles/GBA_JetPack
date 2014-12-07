@@ -119,6 +119,15 @@ void game_init() {
 	newToken(0, 0, 32, 32);
 	t_setSprite(0, 0, 1, 0, 1);
 	t_addScript(0, 0, playerScript);
+
+	sortAddToken(0, 10, 10);
+	sortAddToken(0, 20, 10);
+	sortAddToken(0, 30, 10);
+	sortAddToken(0, 40, 10);
+
+	killToken(1, 0);
+
+	sortAddToken(0, 55, 55);
 }
 
 void game_logic() {

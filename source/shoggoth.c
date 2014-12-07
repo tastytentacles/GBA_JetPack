@@ -9,9 +9,39 @@
 #include "shoggoth.h"
 
 int id[3] = {0, 16, 64};
+int _swapStackLen[] = {16, 48, 64};
+token* _swapStack[] = {gameStack, bulletStack, particalStack};
 
+uint sortToken(int stackID) {
+	int n;
+	int _out = 0;
+	for (n = 0; n < _swapStackLen[stackID]; n++) {
+		if (_swapStack[stackID][n]._state == 0) {
+			_out = n;
+			break;
+		}
+	}
+	return _out;
+}
+
+unsigned int slashRound(float q) {
+	float p1 = (q - (unsigned int) q);
+	unsigned int a;
+	if (p1 < 0.5) { a = q; }
+	else {a = q + 1; }
+	return a;
+}
+
+/*
+	------ key ------
+		0	=	null
+		1	=	dead
+		2	=	alive
+*/
 void newToken(int tIndex, int stackID, int tx, int ty) {
 	token _token = {
+		._state = 2,
+
 		._pos = {
 			._x = tx,
 			._y = ty
@@ -43,6 +73,17 @@ void newToken(int tIndex, int stackID, int tx, int ty) {
 		case 1 : bulletStack[tIndex] = _token; break;
 		case 2 : particalStack[tIndex] = _token; break;
 	}
+}
+
+uint sortAddToken(int stackID, int _x, int _y) {
+	uint tStackID = sortToken(stackID);
+	newToken(tStackID, stackID, _x, _y);
+	return tStackID;
+}
+
+void killToken(int tIndex, int stackID) {
+	token _blankToken = {};
+	_swapStack[stackID][tIndex] = _blankToken;
 }
 
 void t_setSprite(int tIndex, int stackID, int tSIndex, int tSSize, int tSShape) {
@@ -80,7 +121,6 @@ void setMapPoint(int _x, int _y, int tIndex, int palette, int memBlock) {
 	free(ap);
 }
 
-// legacy, needs rerighting
 void setMapBox(int _x, int _y, int _width, int _height, int tIndex, int palette, int memBlock) {
 	int nx, ny;
 	for (nx = 0; nx < _width; nx++) {
@@ -105,24 +145,26 @@ void setMapPoint_L(int _x, int _y, tileProfile* _tile, int palette, int memBlock
 	free(ap);
 }
 
-// temp
-unsigned int slashRound(float q) {
-	float p1 = (q - (unsigned int) q);
-	unsigned int a;
-	if (p1 < 0.5) { a = q; }
-	else {a = q + 1; }
-	return a;
+
+
+extern void missileScript(token* __self);
+void addMissile(int _x, int _y) {
+	uint tID = sortAddToken(1, _x, _y);
+	t_setSprite(tID, 1, 32, 0, 0);
+	t_addScript(tID, 1, missileScript);
+	bulletStack[tID]._vec._speedx = 2;
 }
-// temp
+
+
 
 void callTokenStack() {
 	unsigned short* _hand;
-	int _swapStackLen[] = {16, 48, 64};
-	token* _swapStack[] = {gameStack, bulletStack, particalStack};
-
 	int n, i;
 	for (i = 0; i < 3; i++) {
 		for (n = 0; n < _swapStackLen[i]; n++) {
+			if (_swapStack[i][n]._state == 1)
+				{ killToken(n, i); }
+
 			_swapStack[i][n]._pos._x += _swapStack[i][n]._vec._speedx;
 			_swapStack[i][n]._pos._y += _swapStack[i][n]._vec._speedy;
 

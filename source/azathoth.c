@@ -21,7 +21,7 @@ void playerScript(token* __self) {
 	scanKeys();
 	u16 keyDown = keysDown();
 	u16 keyUp = keysUp();
-	u16 keyHeld = keysHeld();
+	// u16 keyHeld = keysHeld();
 
 	if (keyDown == KEY_RIGHT)
 		{ dpad_right = true; }
@@ -41,20 +41,32 @@ void playerScript(token* __self) {
 	if (keyUp == KEY_DOWN)
 		{ dpad_down = false; }
 
+	if (keyDown == KEY_A) {
+		addMissile(__self->_pos._x, __self->_pos._y);
+	}
+
 	__self->_vec._speedy += (dpad_down - dpad_up) * shipSpeed;
 	__self->_vec._speedx += (dpad_right - dpad_left) * shipSpeed;
 
-	if (__self->_vec._speedx > 0.01 || __self->_vec._speedx < -0.01) {
+	if (__self->_vec._speedx > 0.01 ||
+		__self->_vec._speedx < -0.01) {
 		__self->_vec._speedx *= shipFriction;
 	}
 	else {
 		__self->_vec._speedx = 0;
 	}
 
-	if (__self->_vec._speedy > 0.01 || __self->_vec._speedy < -0.01) {
+	if (__self->_vec._speedy > 0.01 ||
+		__self->_vec._speedy < -0.01) {
 		__self->_vec._speedy *= shipFriction;
 	}
 	else {
 		__self->_vec._speedy = 0;
+	}
+}
+
+void missileScript(token* __self) {
+	if (__self->_pos._x > 60) {
+		__self->_state = 1;
 	}
 }

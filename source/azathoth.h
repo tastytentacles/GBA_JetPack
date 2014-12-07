@@ -13,4 +13,5 @@
 #include "shoggoth.h"
 
 void playerScript(token* __self);
+void missileScript(token* __self);
 #endif

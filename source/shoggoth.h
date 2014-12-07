@@ -64,21 +64,34 @@ struct token {
 	point2D			_firePos;
 	simpleVec2D		_vec;
 	objHandle		_obj;
+	char			_state;
 	void			(*_script)(token *);
 };
 
 int id[3];
-// int id[] = {0, 16, 64};
 
 token gameStack[16];
 token bulletStack[48];
 token particalStack[64];
+
+uint sortToken(int stackID);
+uint slashRound(float q);
+
 void newToken(int tIndex, int stackID, int tx, int ty);
+uint sortAddToken(int stackID, int _x, int _y);
+void killToken(int tIndex, int stackID);
 void t_setSprite(int tIndex, int stackID, int tSIndex, int tSSize, int tSShape);
 void t_addScript(int tIndex, int stackID, void (*tScript));
 void setMapPoint(int _x, int _y, int tIndex, int palette, int memBlock);
 void setMapPoint_L(int _x, int _y, tileProfile* _tile, int palette, int memBlock);
 void setMapBox(int _x, int _y, int _width, int _height, int tIndex, int palette, int memBlock);
-unsigned int slashRound(float q);
+void drawNumber(int _x, int _y, int _numb, int memBlock);
+
+
+void addMissile(int _x, int _y);
+void addMOB();
+void addEBall();
+
+
 void callTokenStack();
 #endif
