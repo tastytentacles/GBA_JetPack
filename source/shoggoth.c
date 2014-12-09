@@ -8,6 +8,10 @@
 
 #include "shoggoth.h"
 
+uint playerScore = 0;
+uint playerLife = 10;
+uint gameState = 1;
+
 int id[3] = {0, 16, 64};
 int _swapStackLen[] = {16, 48, 64};
 token* _swapStack[] = {gameStack, bulletStack, particalStack};
@@ -116,6 +120,13 @@ void t_addScript(int tIndex, int stackID, void (*tScript)) {
 	_hand->_script = tScript;
 }
 
+void t_setBbox(uint tIndex, uint stackID, uint _x, uint _y, uint _width, uint _height){
+	_swapStack[stackID][tIndex]._bbox._x = _x;
+	_swapStack[stackID][tIndex]._bbox._y = _y;
+	_swapStack[stackID][tIndex]._bbox._width = _width;
+	_swapStack[stackID][tIndex]._bbox._height = _height;
+}
+
 void setMapPoint(int _x, int _y, int tIndex, int palette, int memBlock) {
 	unsigned short* ap = (unsigned short*) 0x06000000;
 	ap = ap + (0x400 * memBlock);
@@ -172,6 +183,7 @@ void addMissile(int _x, int _y) {
 extern void smokeScript(token* __self);
 void addSmoke(int _x, int _y) {
 	uint tID = sortAddToken(2, _x, _y);
+	t_setSprite(tID, 2, 32, 0, 0);
 	t_addScript(tID, 2, smokeScript);
 }
 

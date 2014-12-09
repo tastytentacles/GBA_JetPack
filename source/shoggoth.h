@@ -13,61 +13,70 @@
 #include <stdlib.h>
 #include <math.h>
 
-typedef struct point2D point2D;
-typedef struct simpleVec2D simpleVec2D;
-typedef struct tileProfile tileProfile;
-typedef struct objHandle objHandle;
-typedef struct spriteHandle spriteHandle;
-// animated sprite handle
 typedef struct token token;
 
-struct point2D
+typedef struct point2D
 {
 	float			_x;
 	float			_y;
-};
+} point2D;
 
-struct simpleVec2D
-{
-	float			_speedx;
-	float			_speedy;	
-};
-
-struct tileProfile
+typedef struct bbox
 {
 	int				_x;
 	int				_y;
 	int				_width;
 	int				_height;
-};
+} bbox;
 
-struct spriteHandle
+typedef struct simpleVec2D
+{
+	float			_speedx;
+	float			_speedy;	
+} simpleVec2D;
+
+typedef struct tileProfile
+{
+	int				_x;
+	int				_y;
+	int				_width;
+	int				_height;
+} tileProfile;
+
+typedef struct spriteHandle
 {
 	int				_index;
 	int				_size;
 	int				_shape;
-};
+} spriteHandle;
 
 // animated sprite handle
 
-struct objHandle
+typedef struct objHandle
 {
 	int				_pointer;
 	
 	// bool			_animated;
 	spriteHandle	_sprite;
 	// animated sprite handle
-};
+} objHandle;
 
 struct token {
 	point2D			_pos;
 	point2D			_firePos;
 	simpleVec2D		_vec;
+	bbox			_bbox;
 	objHandle		_obj;
+
+
 	char			_state;
 	uint 			_tick;
 	void			(*_script)(token *);
 };
+
+uint playerScore;
+uint playerLife;
+uint gameState;
 
 int id[3];
 
@@ -83,6 +92,7 @@ uint sortAddToken(int stackID, int _x, int _y);
 void killToken(int tIndex, int stackID);
 void t_setSprite(int tIndex, int stackID, int tSIndex, int tSSize, int tSShape);
 void t_addScript(int tIndex, int stackID, void (*tScript));
+void t_setBbox(uint tIndex, uint stackID, uint _x, uint _y, uint _width, uint _height);
 void setMapPoint(int _x, int _y, int tIndex, int palette, int memBlock);
 void setMapPoint_L(int _x, int _y, tileProfile* _tile, int palette, int memBlock);
 void setMapBox(int _x, int _y, int _width, int _height, int tIndex, int palette, int memBlock);

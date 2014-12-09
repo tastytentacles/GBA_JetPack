@@ -10,18 +10,20 @@
 
 void invoke() {
 	// establish relevlent io and bg memmory
-	unsigned short* cp1 = (unsigned short*) 0x4000000;	// i/o part 1
-	unsigned short* cp2 = (unsigned short*) 0x4000004;	// i/o part 2
-	unsigned short* bgc0 = (unsigned short*) 0x4000008;	// bg controll part 1
-	unsigned short* bgc1 = (unsigned short*) 0x400000A;	// bg controll part 2
-	unsigned short* bgc2 = (unsigned short*) 0x400000C;	// bg controll part 3
-	unsigned short* bgc3 = (unsigned short*) 0x400000E;	// bg controll part 4
+	ushort* cp1 = (ushort*) 0x4000000;	// i/o part 1
+	ushort* cp2 = (ushort*) 0x4000004;	// i/o part 2
+	ushort* bgc0 = (ushort*) 0x4000008;	// bg controll part 1
+	ushort* bgc1 = (ushort*) 0x400000A;	// bg controll part 2
+	ushort* bgc2 = (ushort*) 0x400000C;	// bg controll part 3
+	ushort* bgc3 = (ushort*) 0x400000E;	// bg controll part 4
+	ushort* tc = (ushort*) 0x4000102;	// timer controll
 	cp1[0] = ((1 << 8) | (1 << 9) | (1 << 10) | (1 << 11) | (1 << 12));
 	cp2[0] = ((1 << 3));
 	bgc0[0] = ((10 << 8));
 	bgc1[0] = ((2 << 0) | (11 << 8));
 	bgc2[0] = ((2 << 0) | (12 << 8));
 	bgc3[0] = ((2 << 0) | (13 << 8));
+	tc[0] = ((1 << 7));
 
 	cp1 = cp2 = NULL;
 	free(cp1);
@@ -83,7 +85,6 @@ void invoke() {
 	for (n = 0; n < 2048; n++) {
 		sp[n] = omegaSprite[n + 2048];
 	}
-
 	sp = NULL;
 	free(sp);
 }
@@ -119,12 +120,15 @@ void game_init() {
 	newToken(0, 0, 32, 32);
 	t_setSprite(0, 0, 1, 0, 1);
 	t_addScript(0, 0, playerScript);
+	t_setBbox(0, 0, 0, 2, 16, 4);
 }
 
 void game_logic() {
 	callTokenStack();
 	bgScroll();
-	drawNumber(8, 1, 1337, 8, 10);
+	drawNumber(8, 1, playerScore, 8, 10);
+	if (playerScore < 13370)
+		{ playerScore++; }
 }
 
 float bg_speed[] = {1.25, 0.65, 0.1};
