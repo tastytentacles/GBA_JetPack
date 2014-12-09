@@ -14,4 +14,5 @@
 
 void playerScript(token* __self);
 void missileScript(token* __self);
+void smokeScript(token* __self);
 #endif

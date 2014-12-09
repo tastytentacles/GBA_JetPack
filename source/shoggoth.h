@@ -65,6 +65,7 @@ struct token {
 	simpleVec2D		_vec;
 	objHandle		_obj;
 	char			_state;
+	uint 			_tick;
 	void			(*_script)(token *);
 };
 
@@ -85,10 +86,11 @@ void t_addScript(int tIndex, int stackID, void (*tScript));
 void setMapPoint(int _x, int _y, int tIndex, int palette, int memBlock);
 void setMapPoint_L(int _x, int _y, tileProfile* _tile, int palette, int memBlock);
 void setMapBox(int _x, int _y, int _width, int _height, int tIndex, int palette, int memBlock);
-void drawNumber(int _x, int _y, int _numb, int memBlock);
+void drawNumber(int _x, int _y, uint _numb, int _displayLen, int memBlock);
 
 
 void addMissile(int _x, int _y);
+void addSmoke(int _x, int _y);
 void addMOB();
 void addEBall();
 

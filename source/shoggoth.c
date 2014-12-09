@@ -82,6 +82,10 @@ uint sortAddToken(int stackID, int _x, int _y) {
 }
 
 void killToken(int tIndex, int stackID) {
+	unsigned short* cleanPointer = (unsigned short*) _swapStack[stackID][tIndex]._obj._pointer;
+	cleanPointer[0] = 0;
+	cleanPointer[1] = 0;
+	cleanPointer[2] = 0;
 	token _blankToken = {};
 	_swapStack[stackID][tIndex] = _blankToken;
 }
@@ -145,6 +149,16 @@ void setMapPoint_L(int _x, int _y, tileProfile* _tile, int palette, int memBlock
 	free(ap);
 }
 
+void drawNumber(int _x, int _y, uint _numb, int _displayLen, int memBlock){
+	int n;
+	uint _readhead = 0;
+	for (n = 0; n < _displayLen; n++) {
+		uint _box = _numb / (_readhead ^ 10);
+		setMapPoint(_x + n, _y, 9 + _box, 1, memBlock);
+		_readhead += 1;
+	}
+}
+
 
 
 extern void missileScript(token* __self);
@@ -153,6 +167,12 @@ void addMissile(int _x, int _y) {
 	t_setSprite(tID, 1, 32, 0, 0);
 	t_addScript(tID, 1, missileScript);
 	bulletStack[tID]._vec._speedx = 2;
+}
+
+extern void smokeScript(token* __self);
+void addSmoke(int _x, int _y) {
+	uint tID = sortAddToken(2, _x, _y);
+	t_addScript(tID, 2, smokeScript);
 }
 
 
@@ -174,7 +194,7 @@ void callTokenStack() {
 
 			// right changes to obj into memmory
 			if (_swapStack[i][n]._obj._pointer != 0) {
-				_hand = (unsigned char*) _swapStack[i][n]._obj._pointer;
+				_hand = (unsigned short*) _swapStack[i][n]._obj._pointer;
 				_hand[0] = ((slashRound(_swapStack[i][n]._pos._y) << 0) |
 					(_swapStack[i][n]._obj._sprite._shape << 14));
 				_hand[1] = ((slashRound(_swapStack[i][n]._pos._x) << 0) |

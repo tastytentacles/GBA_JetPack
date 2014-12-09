@@ -119,26 +119,17 @@ void game_init() {
 	newToken(0, 0, 32, 32);
 	t_setSprite(0, 0, 1, 0, 1);
 	t_addScript(0, 0, playerScript);
-
-	sortAddToken(0, 10, 10);
-	sortAddToken(0, 20, 10);
-	sortAddToken(0, 30, 10);
-	sortAddToken(0, 40, 10);
-
-	killToken(1, 0);
-
-	sortAddToken(0, 55, 55);
 }
 
 void game_logic() {
 	callTokenStack();
 	bgScroll();
+	drawNumber(8, 1, 1337, 8, 10);
 }
 
 float bg_speed[] = {1.25, 0.65, 0.1};
 float bg_pos[] = {0.0, 0.0, 0.0};
 void bgScroll() {
-	// unsigned short* bg0 = (unsigned short*) 0x4000010;
 	unsigned short* bg1 = (unsigned short*) 0x4000014;
 	unsigned short* bg2 = (unsigned short*) 0x4000018;
 	unsigned short* bg3 = (unsigned short*) 0x400001C;
@@ -152,7 +143,6 @@ void bgScroll() {
 		}
 	}
 	
-	// bg0[0] = slashRound(bg_pos[0]);
 	bg1[0] = slashRound(bg_pos[0]);
 	bg2[0] = slashRound(bg_pos[1]);
 	bg3[0] = slashRound(bg_pos[2]);

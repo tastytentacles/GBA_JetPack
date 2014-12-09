@@ -23,25 +23,25 @@ void playerScript(token* __self) {
 	u16 keyUp = keysUp();
 	// u16 keyHeld = keysHeld();
 
-	if (keyDown == KEY_RIGHT)
+	if (keyDown & KEY_RIGHT)
 		{ dpad_right = true; }
-	if (keyDown == KEY_LEFT)
+	if (keyDown & KEY_LEFT)
 		{ dpad_left = true; }
-	if (keyDown == KEY_UP)
+	if (keyDown & KEY_UP)
 		{ dpad_up = true; }
-	if (keyDown == KEY_DOWN)
+	if (keyDown & KEY_DOWN)
 		{ dpad_down = true; }
 
-	if (keyUp == KEY_RIGHT)
+	if (keyUp & KEY_RIGHT)
 		{ dpad_right = false; }
-	if (keyUp == KEY_LEFT)
+	if (keyUp & KEY_LEFT)
 		{ dpad_left = false; }
-	if (keyUp == KEY_UP)
+	if (keyUp & KEY_UP)
 		{ dpad_up = false; }
-	if (keyUp == KEY_DOWN)
+	if (keyUp & KEY_DOWN)
 		{ dpad_down = false; }
 
-	if (keyDown == KEY_A) {
+	if (keyDown & KEY_A) {
 		addMissile(__self->_pos._x, __self->_pos._y);
 	}
 
@@ -66,7 +66,11 @@ void playerScript(token* __self) {
 }
 
 void missileScript(token* __self) {
-	if (__self->_pos._x > 60) {
+	if (__self->_pos._x > 240) {
 		__self->_state = 1;
 	}
+}
+
+void smokeScript(token* __self) {
+
 }
