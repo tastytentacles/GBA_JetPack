@@ -42,8 +42,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-GBA_JetPack.gba
 GBA_JetPack.elf
 *.o
 *.d
 *.map
+/build
