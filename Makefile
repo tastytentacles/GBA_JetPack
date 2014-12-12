@@ -21,6 +21,7 @@ BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	
 INCLUDES	:=
+MUSIC		:=	music
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -46,7 +47,7 @@ export PATH		:=	$(DEVKITARM)/bin:$(PATH)
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:=	-lgba
+LIBS	:=	-lgba -lmm
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
@@ -73,7 +74,8 @@ export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
 CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
-BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
+BINFILES	:=	soundbank.bin
+export AUDIOFILES	:=	$(foreach dir,$(notdir $(wildcard $(MUSIC)/*.*)),$(CURDIR)/$(MUSIC)/$(dir))
 
 #---------------------------------------------------------------------------------
 # use CXX for linking C++ projects, CC for standard C
@@ -89,7 +91,8 @@ else
 endif
 #---------------------------------------------------------------------------------
 
-export OFILES	:= $(addsuffix .o,$(BINFILES)) $(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
+export OFILES	:= $(BINFILES:.bin=.o) $(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(SFILES:.s=.o)
+
 
 #---------------------------------------------------------------------------------
 # build a list of include paths
@@ -127,6 +130,15 @@ DEPENDS	:=	$(OFILES:.o=.d)
 $(OUTPUT).gba	:	$(OUTPUT).elf
 
 $(OUTPUT).elf	:	$(OFILES)
+
+soundbank.bin : $(AUDIOFILES)
+
+	@mmutil $^ -osoundbank.bin -hsoundbank.h
+
+%.o	:	%.bin
+	@echo $(notdir $<)
+	@$(bin2o)
+
 
 %.o	:	%.pcx
 	@echo $(notdir $<)

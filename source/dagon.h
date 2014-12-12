@@ -16,12 +16,12 @@
 #include "shoggoth.h"
 #include "azathoth.h"
 
-void invoke();
-void game_init();
-void game_logic();
+void invoke(); // sets up palettes and I/O flags
+void game_init(); // draws background to memory
+void game_logic(); // called every logic tick and handles game logic
 
 float bg_speed[3];
 float bg_pos[3];
-void bgScroll();
-void titleScript();
+void bgScroll(); // handles background parallax effect
+void titleScript(); // handles title screen logic
 #endif

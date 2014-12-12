@@ -9,14 +9,14 @@
 #include "dagon.h"
 
 void invoke() {
-	// establish relevlent io and bg memmory
-	ushort* cp1 = (ushort*) 0x4000000;	// i/o part 1
-	ushort* cp2 = (ushort*) 0x4000004;	// i/o part 2
-	ushort* bgc0 = (ushort*) 0x4000008;	// bg controll part 1
-	ushort* bgc1 = (ushort*) 0x400000A;	// bg controll part 2
-	ushort* bgc2 = (ushort*) 0x400000C;	// bg controll part 3
-	ushort* bgc3 = (ushort*) 0x400000E;	// bg controll part 4
-	ushort* tc = (ushort*) 0x4000102;	// timer controll
+	// establish relevant I/O and background memory
+	ushort* cp1 = (ushort*) 0x4000000;	// I/O part 1
+	ushort* cp2 = (ushort*) 0x4000004;	// I/O part 2
+	ushort* bgc0 = (ushort*) 0x4000008;	// background control part 1
+	ushort* bgc1 = (ushort*) 0x400000A;	// background control part 2
+	ushort* bgc2 = (ushort*) 0x400000C;	// background control part 3
+	ushort* bgc3 = (ushort*) 0x400000E;	// background control part 4
+	ushort* tc = (ushort*) 0x4000102;	// timer control
 	cp1[0] = ((1 << 8) | (1 << 9) | (1 << 10) | (1 << 11) | (1 << 12));
 	cp2[0] = ((1 << 3));
 	bgc0[0] = ((10 << 8));
@@ -33,11 +33,11 @@ void invoke() {
 	free(bgc1);
 	free(bgc2);
 
-	// establish palet
-	unsigned short* pp = (unsigned short*) 0x5000000;	// tile memmory palet block
-	unsigned short* spp = (unsigned short*) 0x5000200;	// obj tile memmory palet block
+	// establish palette
+	unsigned short* pp = (unsigned short*) 0x5000000;	// tile memory palette block
+	unsigned short* spp = (unsigned short*) 0x5000200;	// obj tile memory palette block
 
-	// palatte 1
+	// palette 1
 	spp[1] = pp[1] = RGB5(8, 8, 8);			// gray
 	spp[2] = pp[2] = RGB5(15, 15, 31);		// blue 1
 	spp[3] = pp[3] = RGB5(10, 10, 31);		// blue 2
@@ -92,10 +92,7 @@ void invoke() {
 }
 
 void game_init() {
-	// ###################################################################################
-	// ################################################################# background set ##
-	// ###################################################################################
-
+	// draws sky
 	setMapBox(0, 16, 32, 2, 6, 1, 13);
 	setMapBox(0, 14, 32, 2, 38, 1, 13);
 	setMapBox(0, 12, 32, 2, 70, 1, 13);
@@ -106,10 +103,12 @@ void game_init() {
 	setMapBox(0, 2, 32, 2, 40, 1, 13);
 	setMapBox(0, 0, 32, 2, 72, 1, 13);
 
+	// set tile profiles for background
 	tileProfile smallMount = {1, 0, 2, 1};
 	tileProfile bigMount = {2, 1, 4, 3};
 	tileProfile ground = {0, 1, 2, 2};
 	
+	// draw mountains and ground
 	int n;
 	for (n = 0; n < 8; n++)
 		{ setMapPoint_L(n * 4, 16, &bigMount, 0, 12); }
@@ -119,10 +118,6 @@ void game_init() {
 
 	for (n = 0; n < 16; n++)
 		{ setMapPoint_L(n * 2, 18, &ground, 0, 11); }
-
-	// ###################################################################################
-	// ################################################################# background set ##
-	// ###################################################################################
 }
 
 uint titleState = 0;
@@ -134,20 +129,25 @@ void game_logic() {
 	callTokenStack();
 	bgScroll();
 	
+	// when game is on title screen
 	if (gameState == 0) {
 		titleScript();
 	}
 
+	// when game transitions to game screen
 	if (gameState == 1) {
 		addPlayer();
 	}
 
+	//when game is on game screen
 	if (gameState == 2){
+		// draw score counter
 		tileProfile scoreText = {9, 1, 5, 1};
 		setMapPoint_L(1, 1, &scoreText, 1, 10);
 		drawNumber(8, 1, playerScore, 8, 10);
 
-		if (spawnTick > 100/* && mobCount < 15*/) {
+		// spawn MOB every 100 logic ticks
+		if (spawnTick > 100) {
 			addMOB();
 			mobCount += 1;
 			spawnTick = 0;
@@ -155,17 +155,21 @@ void game_logic() {
 		else { spawnTick += 1; }
 	}
 
+	// when player dies and game transitions to title screen
 	if (gameState == 3) {
+		// reset title variables
 		titleState = 0;
 		titleY = 0;
 		titleSpeed = 0;
 
+		// update best score on title screen
 		if (bestScore < playerScore) {
 			bestScore = playerScore;
 		}
 
 		playerScore = 0;
 
+		// clear HUD layer ready for title screen
 		uint nx, ny;
 		for (ny = 0; ny < 32; ny++) {
 			for (nx = 0; nx < 32; nx++) {
@@ -186,6 +190,7 @@ void bgScroll() {
 	for (n = 0; n < 3; n++) {
 		bg_pos[n] += bg_speed[n];
 
+		// limit max bg_pos
 		if (bg_pos[n] > 256) {
 			bg_pos[n] = 0;
 		}
@@ -198,21 +203,24 @@ void bgScroll() {
 
 /*
 	------ title state key ------
-		0	=	inishalise
+		0	=	setup
 		1	=	idle
 		2	=	pressed start
-		3	=	clear bg layer
+		3	=	clear background layer
 */
 void titleScript() {
 	if (titleState == 0) {
+		// draw title
 		tileProfile title = {20, 0, 12, 8};
 		setMapPoint_L(9, 4, &title, 1, 10);
 		titleState = 1;
 
+		// draw best score
 		drawNumber(11, 13, bestScore, 8, 10);
 	}
 
 	if (titleState == 1) {
+		// wait for player to press start
 		scanKeys();
 		u16 keyDown = keysDown();
 
@@ -221,6 +229,7 @@ void titleScript() {
 		}
 	}
 
+	// scroll title off of screen
 	ushort* tc = (ushort*) 0x4000012;
 	if (titleState == 2) {
 		if (titleY > 100) {
@@ -233,6 +242,7 @@ void titleScript() {
 		}
 	}
 
+	// clear background later for HUD
 	if (titleState == 3) {
 		tc[0] = 0;
 		uint nx, ny;

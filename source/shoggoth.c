@@ -8,11 +8,13 @@
 
 #include "shoggoth.h"
 
+// 0 game variables
 uint playerScore = 0;
 uint playerLife = 10;
 uint gameState = 0;
 uint mobCount = 0;
 
+// set swap stack handeler variables
 int id[3] = {0, 16, 64};
 int _swapStackLen[] = {16, 48, 64};
 token* _swapStack[] = {gameStack, bulletStack, particalStack};

@@ -11,7 +11,7 @@
 
 int main() {
 	irqInit();
-	irqEnable(IRQ_VBLANK);
+	irqEnable(IRQ_VBLANK); 
 	invoke();
 	game_init();
 
