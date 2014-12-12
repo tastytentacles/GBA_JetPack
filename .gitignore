@@ -46,4 +46,4 @@ GBA_JetPack.elf
 *.o
 *.d
 *.map
-/build
+build
