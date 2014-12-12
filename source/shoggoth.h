@@ -53,15 +53,10 @@ typedef struct spriteHandle
 	point2D			_offset;
 } spriteHandle;
 
-// animated sprite handle
-
 typedef struct objHandle
 {
-	int				_pointer;
-	
-	// bool			_animated;
+	int				_pointer;	
 	spriteHandle	_sprite;
-	// animated sprite handle
 } objHandle;
 
 /*
@@ -80,11 +75,14 @@ struct token {
 
 	char			_state;
 	uint 			_tick;
+	bool			_swich;
+	bool			_swich2;
 	void			(*_script)(token *);
 };
 
 uint playerScore;
 uint playerLife;
+uint mobCount;
 
 /*
 	------ game state key ------
@@ -118,11 +116,13 @@ void setMapPoint_L(int _x, int _y, tileProfile* _tile, int palette, int memBlock
 void setMapBox(int _x, int _y, int _width, int _height, int tIndex, int palette, int memBlock);
 void drawNumber(int _x, int _y, uint _numb, int _displayLen, int memBlock);
 
+bool checkHitBox(uint _x, uint _y, uint _width, uint _height);
+
 void addPlayer();
 void addMissile(int _x, int _y);
 void addSmoke(int _x, int _y);
 void addMOB();
-void addEBall();
+void addEBall(uint _x, uint _y);
 
 
 void callTokenStack();

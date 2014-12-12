@@ -59,15 +59,17 @@ void invoke() {
 	pp[10] = RGB5(15, 15, 31);				// sky blue 3
 	pp[11] = RGB5(10, 10, 31);				// sky blue 4
 
-	// palatte 2
-	pp = (unsigned short*) 0x5000020;
+	pp = (unsigned short*) 0x5000020;		// palette 2 pointer
 
-	pp[1] = RGB5(0, 0, 0);
-	pp[1] = RGB5(31, 31, 31);
+	pp[1] = RGB5(31, 31, 31);				// white 1
+	pp[3] = RGB5(31, 26, 0);				// yellow 1
+	pp[4] = RGB5(27, 22, 0);				// yellow 2
 	pp[8] = RGB5(25, 25, 31);				// sky blue 1
 	pp[9] = RGB5(20, 20, 31);				// sky blue 2
 	pp[10] = RGB5(15, 15, 31);				// sky blue 3
 	pp[11] = RGB5(10, 10, 31);				// sky blue 4
+	pp[14] = RGB5(31, 0, 0);				// red 1
+
 
 	pp = NULL;
 	free(pp);
@@ -119,20 +121,15 @@ void game_init() {
 		{ setMapPoint_L(n * 2, 18, &ground, 0, 11); }
 
 	// ###################################################################################
-	// ###############################################################^# background set #^
+	// ################################################################# background set ##
 	// ###################################################################################
-	// ###############################################################V# game state set #V
-	// ###################################################################################
-
-	// setMapPoint_L(1, 1, &scoreText, 1, 10);
-
-	// newToken(0, 0, 32, 32);
-	// t_setSprite(0, 0, 1, 0, 1);
-	// t_addScript(0, 0, playerScript);
-	// t_setBbox(0, 0, 0, 2, 16, 4);
-	// t_setFirePoint(0, 0, 14, 4);
 }
 
+uint titleState = 0;
+float titleY = 0;
+float titleSpeed = 0;
+
+uint spawnTick = 0;
 void game_logic() {
 	callTokenStack();
 	bgScroll();
@@ -151,6 +148,26 @@ void game_logic() {
 		drawNumber(8, 1, playerScore, 8, 10);
 		if (playerScore < 13370)
 			{ playerScore++; }
+
+		if (spawnTick > 100/* && mobCount < 15*/) {
+			addMOB();
+			mobCount += 1;
+			spawnTick = 0;
+		}
+		else { spawnTick += 1; }
+	}
+
+	if (gameState == 3) {
+		titleState = 0;
+		titleY = 0;
+		titleSpeed = 0;
+
+		uint nx, ny;
+		for (ny = 0; ny < 32; ny++) {
+			for (nx = 0; nx < 32; nx++) {
+				setMapPoint(nx, ny, 0, 0, 10);
+			}
+		}
 	}
 }
 
@@ -182,13 +199,10 @@ void bgScroll() {
 		2	=	pressed start
 		3	=	clear bg layer
 */
-uint titleState = 0;
-float titleY = 0;
-float titleSpeed = 0;
 void titleScript() {
 	if (titleState == 0) {
 		tileProfile title = {20, 0, 12, 8};
-		setMapPoint_L(9, 4, &title, 0, 10);
+		setMapPoint_L(9, 4, &title, 1, 10);
 		titleState = 1;
 	}
 

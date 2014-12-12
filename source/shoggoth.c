@@ -11,6 +11,7 @@
 uint playerScore = 0;
 uint playerLife = 10;
 uint gameState = 0;
+uint mobCount = 0;
 
 int id[3] = {0, 16, 64};
 int _swapStackLen[] = {16, 48, 64};
@@ -24,6 +25,7 @@ uint sortToken(int stackID) {
 			_out = n;
 			break;
 		}
+		_out = _swapStackLen[stackID];
 	}
 	return _out;
 }
@@ -178,6 +180,24 @@ void drawNumber(int _x, int _y, uint _numb, int _displayLen, int memBlock){
 	}
 }
 
+bool checkHitBox(uint _x, uint _y, uint _width, uint _height) {
+	bool _out = false;
+	int n;
+	for (n = 0; n < 48; n++) {
+		if (_swapStack[1][n]._state == 2) {
+			if (_swapStack[1][n]._pos._x > _x &&
+				_swapStack[1][n]._pos._x < _x + _width &&
+				_swapStack[1][n]._pos._y > _y &&
+				_swapStack[1][n]._pos._y < _y + _height) {
+				_out = true;
+				_swapStack[1][n]._state = 1;
+				break;
+			}
+		}
+	}
+	return _out;
+}
+
 
 
 extern void playerScript(token* __self);
@@ -187,7 +207,7 @@ void addPlayer() {
 		t_setSprite(0, 0, 1, 0, 1);
 		t_addScript(0, 0, playerScript);
 		t_setBbox(0, 0, 0, 2, 16, 4);
-		t_setFirePoint(0, 0, 14, 4);
+		t_setFirePoint(0, 0, 16, 4);
 	}
 }
 
@@ -208,6 +228,25 @@ void addSmoke(int _x, int _y) {
 	t_setSpriteOffset(tID, 2, 4, 4);
 }
 
+extern void mobScript(token* __self);
+void addMOB() {
+	unsigned char* timeSpace = (unsigned char*) 0x4000100;
+	srand(timeSpace[0]);
+	uint tID = sortAddToken(0, 240, (rand() % 100) + 20);
+	t_setFirePoint(tID, 0, -8, 0);
+	t_setSprite(tID, 0, 4, 1, 0);
+	t_setSpriteOffset(tID, 0, 8, 8);
+	t_addScript(tID, 0, mobScript);
+}
+
+extern void eBallScript(token* __self);
+void addEBall(uint _x, uint _y) {
+	uint tID = sortAddToken(1, _x, _y);
+	// t_setSprite(tID, 1, 100, 0, 0);
+	t_addScript(tID, 1, eBallScript);
+	bulletStack[tID]._vec._speedx = -1.45;
+	t_setSpriteOffset(tID, 1, 4, 4);
+}
 
 
 void callTokenStack() {
