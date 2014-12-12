@@ -23,4 +23,5 @@ void game_logic();
 float bg_speed[3];
 float bg_pos[3];
 void bgScroll();
+void titleScript();
 #endif

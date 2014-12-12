@@ -37,52 +37,71 @@ void ScreenLimiter(token* __self) {
 }
 
 void playerScript(token* __self) {
-	scanKeys();
-	u16 keyDown = keysDown();
-	u16 keyUp = keysUp();
+	
+	// if (gameState == 0) {
 
-	if (keyDown & KEY_RIGHT)
-		{ dpad_right = true; }
-	if (keyDown & KEY_LEFT)
-		{ dpad_left = true; }
-	if (keyDown & KEY_UP)
-		{ dpad_up = true; }
-	if (keyDown & KEY_DOWN)
-		{ dpad_down = true; }
+	// }
 
-	if (keyUp & KEY_RIGHT)
-		{ dpad_right = false; }
-	if (keyUp & KEY_LEFT)
-		{ dpad_left = false; }
-	if (keyUp & KEY_UP)
-		{ dpad_up = false; }
-	if (keyUp & KEY_DOWN)
-		{ dpad_down = false; }
-
-	if (keyDown & KEY_A) {
-		addMissile(__self->_pos._x, __self->_pos._y);
+	if (gameState == 1) {
+		if (__self->_pos._x > 32) {
+			if (__self->_vec._speedx > -3.5) {
+				__self->_vec._speedx -= 0.1;
+			}
+		}
+		else {
+			gameState = 2;
+		}
 	}
 
-	__self->_vec._speedy += (dpad_down - dpad_up) * shipSpeed;
-	__self->_vec._speedx += (dpad_right - dpad_left) * shipSpeed;
-
-	if (__self->_vec._speedx > 0.01 ||
-		__self->_vec._speedx < -0.01) {
-		__self->_vec._speedx *= shipFriction;
+	if (gameState == 2){
+		scanKeys();
+		u16 keyDown = keysDown();
+		u16 keyUp = keysUp();
+	
+		if (keyDown & KEY_RIGHT)
+			{ dpad_right = true; }
+		if (keyDown & KEY_LEFT)
+			{ dpad_left = true; }
+		if (keyDown & KEY_UP)
+			{ dpad_up = true; }
+		if (keyDown & KEY_DOWN)
+			{ dpad_down = true; }
+	
+		if (keyUp & KEY_RIGHT)
+			{ dpad_right = false; }
+		if (keyUp & KEY_LEFT)
+			{ dpad_left = false; }
+		if (keyUp & KEY_UP)
+			{ dpad_up = false; }
+		if (keyUp & KEY_DOWN)
+			{ dpad_down = false; }
+	
+		if (keyDown & KEY_A) {
+			addMissile(__self->_pos._x + __self->_firePos._x,
+				__self->_pos._y + __self->_firePos._y);
+		}
+	
+		__self->_vec._speedy += (dpad_down - dpad_up) * shipSpeed;
+		__self->_vec._speedx += (dpad_right - dpad_left) * shipSpeed;
+	
+		if (__self->_vec._speedx > 0.01 ||
+			__self->_vec._speedx < -0.01) {
+			__self->_vec._speedx *= shipFriction;
+		}
+		else {
+			__self->_vec._speedx = 0;
+		}
+	
+		if (__self->_vec._speedy > 0.01 ||
+			__self->_vec._speedy < -0.01) {
+			__self->_vec._speedy *= shipFriction;
+		}
+		else {
+			__self->_vec._speedy = 0;
+		}
+	
+		ScreenLimiter(__self);
 	}
-	else {
-		__self->_vec._speedx = 0;
-	}
-
-	if (__self->_vec._speedy > 0.01 ||
-		__self->_vec._speedy < -0.01) {
-		__self->_vec._speedy *= shipFriction;
-	}
-	else {
-		__self->_vec._speedy = 0;
-	}
-
-	ScreenLimiter(__self);
 }
 
 void mobScript(token* __self) {

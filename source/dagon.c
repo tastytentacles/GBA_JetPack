@@ -90,6 +90,10 @@ void invoke() {
 }
 
 void game_init() {
+	// ###################################################################################
+	// ################################################################# background set ##
+	// ###################################################################################
+
 	setMapBox(0, 16, 32, 2, 6, 1, 13);
 	setMapBox(0, 14, 32, 2, 38, 1, 13);
 	setMapBox(0, 12, 32, 2, 70, 1, 13);
@@ -103,7 +107,6 @@ void game_init() {
 	tileProfile smallMount = {1, 0, 2, 1};
 	tileProfile bigMount = {2, 1, 4, 3};
 	tileProfile ground = {0, 1, 2, 2};
-	tileProfile scoreText = {9, 1, 5, 1};
 	
 	int n;
 	for (n = 0; n < 8; n++)
@@ -115,28 +118,48 @@ void game_init() {
 	for (n = 0; n < 16; n++)
 		{ setMapPoint_L(n * 2, 18, &ground, 0, 11); }
 
-	setMapPoint_L(1, 1, &scoreText, 1, 10);
+	// ###################################################################################
+	// ###############################################################^# background set #^
+	// ###################################################################################
+	// ###############################################################V# game state set #V
+	// ###################################################################################
 
-	newToken(0, 0, 32, 32);
-	t_setSprite(0, 0, 1, 0, 1);
-	t_addScript(0, 0, playerScript);
-	t_setBbox(0, 0, 0, 2, 16, 4);
+	// setMapPoint_L(1, 1, &scoreText, 1, 10);
+
+	// newToken(0, 0, 32, 32);
+	// t_setSprite(0, 0, 1, 0, 1);
+	// t_addScript(0, 0, playerScript);
+	// t_setBbox(0, 0, 0, 2, 16, 4);
+	// t_setFirePoint(0, 0, 14, 4);
 }
 
 void game_logic() {
 	callTokenStack();
 	bgScroll();
-	drawNumber(8, 1, playerScore, 8, 10);
-	if (playerScore < 13370)
-		{ playerScore++; }
+	
+	if (gameState == 0) {
+		titleScript();
+	}
+
+	if (gameState == 1) {
+		addPlayer();
+	}
+
+	if (gameState == 2){
+		tileProfile scoreText = {9, 1, 5, 1};
+		setMapPoint_L(1, 1, &scoreText, 1, 10);
+		drawNumber(8, 1, playerScore, 8, 10);
+		if (playerScore < 13370)
+			{ playerScore++; }
+	}
 }
 
 float bg_speed[] = {1.25, 0.65, 0.1};
 float bg_pos[] = {0.0, 0.0, 0.0};
 void bgScroll() {
-	unsigned short* bg1 = (unsigned short*) 0x4000014;
-	unsigned short* bg2 = (unsigned short*) 0x4000018;
-	unsigned short* bg3 = (unsigned short*) 0x400001C;
+	ushort* bg1 = (ushort*) 0x4000014;
+	ushort* bg2 = (ushort*) 0x4000018;
+	ushort* bg3 = (ushort*) 0x400001C;
 
 	int n;
 	for (n = 0; n < 3; n++) {
@@ -150,4 +173,54 @@ void bgScroll() {
 	bg1[0] = slashRound(bg_pos[0]);
 	bg2[0] = slashRound(bg_pos[1]);
 	bg3[0] = slashRound(bg_pos[2]);
+}
+
+/*
+	------ title state key ------
+		0	=	inishalise
+		1	=	idle
+		2	=	pressed start
+		3	=	clear bg layer
+*/
+uint titleState = 0;
+float titleY = 0;
+float titleSpeed = 0;
+void titleScript() {
+	if (titleState == 0) {
+		tileProfile title = {20, 0, 12, 8};
+		setMapPoint_L(9, 4, &title, 0, 10);
+		titleState = 1;
+	}
+
+	if (titleState == 1) {
+		scanKeys();
+		u16 keyDown = keysDown();
+
+		if (keyDown & KEY_START) {
+			titleState = 2;
+		}
+	}
+
+	ushort* tc = (ushort*) 0x4000012;
+	if (titleState == 2) {
+		if (titleY > 100) {
+			titleState = 3;
+		}
+		else {
+			titleSpeed += 0.1;
+			titleY += titleSpeed;
+			tc[0] = slashRound(titleY);
+		}
+	}
+
+	if (titleState == 3) {
+		tc[0] = 0;
+		uint nx, ny;
+		for (ny = 0; ny < 32; ny++) {
+			for (nx = 0; nx < 32; nx++) {
+				setMapPoint(nx, ny, 0, 0, 10);
+			}
+		}
+		gameState = 1;
+	}
 }

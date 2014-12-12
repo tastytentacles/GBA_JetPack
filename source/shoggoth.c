@@ -10,7 +10,7 @@
 
 uint playerScore = 0;
 uint playerLife = 10;
-uint gameState = 1;
+uint gameState = 0;
 
 int id[3] = {0, 16, 64};
 int _swapStackLen[] = {16, 48, 64};
@@ -36,12 +36,6 @@ unsigned int slashRound(float q) {
 	return a;
 }
 
-/*
-	------ key ------
-		0	=	null
-		1	=	dead
-		2	=	alive
-*/
 void newToken(int tIndex, int stackID, int tx, int ty) {
 	token _token = {
 		._state = 2,
@@ -67,7 +61,11 @@ void newToken(int tIndex, int stackID, int tx, int ty) {
 			._sprite = {
 				._index = 0,
 				._size = 0,
-				._shape = 0
+				._shape = 0,
+				._offset = {
+					._x = 0,
+					._y = 0
+				}
 			}
 		}
 	};
@@ -86,7 +84,7 @@ uint sortAddToken(int stackID, int _x, int _y) {
 }
 
 void killToken(int tIndex, int stackID) {
-	unsigned short* cleanPointer = (unsigned short*) _swapStack[stackID][tIndex]._obj._pointer;
+	ushort* cleanPointer = (ushort*) _swapStack[stackID][tIndex]._obj._pointer;
 	cleanPointer[0] = 0;
 	cleanPointer[1] = 0;
 	cleanPointer[2] = 0;
@@ -120,11 +118,21 @@ void t_addScript(int tIndex, int stackID, void (*tScript)) {
 	_hand->_script = tScript;
 }
 
+void t_setSpriteOffset(uint tIndex, uint stackID, int _x, int _y) {
+	_swapStack[stackID][tIndex]._obj._sprite._offset._x = _x;
+	_swapStack[stackID][tIndex]._obj._sprite._offset._y = _y;
+}
+
 void t_setBbox(uint tIndex, uint stackID, uint _x, uint _y, uint _width, uint _height){
 	_swapStack[stackID][tIndex]._bbox._x = _x;
 	_swapStack[stackID][tIndex]._bbox._y = _y;
 	_swapStack[stackID][tIndex]._bbox._width = _width;
 	_swapStack[stackID][tIndex]._bbox._height = _height;
+}
+
+void t_setFirePoint(uint tIndex, uint stackID, int _x, int _y) {
+	_swapStack[stackID][tIndex]._firePos._x = _x;
+	_swapStack[stackID][tIndex]._firePos._y = _y;
 }
 
 void setMapPoint(int _x, int _y, int tIndex, int palette, int memBlock) {
@@ -172,12 +180,24 @@ void drawNumber(int _x, int _y, uint _numb, int _displayLen, int memBlock){
 
 
 
+extern void playerScript(token* __self);
+void addPlayer() {
+	if (_swapStack[0][0]._state == 0) {
+		newToken(0, 0, 240, 80);
+		t_setSprite(0, 0, 1, 0, 1);
+		t_addScript(0, 0, playerScript);
+		t_setBbox(0, 0, 0, 2, 16, 4);
+		t_setFirePoint(0, 0, 14, 4);
+	}
+}
+
 extern void missileScript(token* __self);
 void addMissile(int _x, int _y) {
 	uint tID = sortAddToken(1, _x, _y);
 	t_setSprite(tID, 1, 32, 0, 0);
 	t_addScript(tID, 1, missileScript);
 	bulletStack[tID]._vec._speedx = 2;
+	t_setSpriteOffset(tID, 1, 0, 4);
 }
 
 extern void smokeScript(token* __self);
@@ -185,6 +205,7 @@ void addSmoke(int _x, int _y) {
 	uint tID = sortAddToken(2, _x, _y);
 	t_setSprite(tID, 2, 32, 0, 0);
 	t_addScript(tID, 2, smokeScript);
+	t_setSpriteOffset(tID, 2, 4, 4);
 }
 
 
@@ -207,9 +228,11 @@ void callTokenStack() {
 			// right changes to obj into memmory
 			if (_swapStack[i][n]._obj._pointer != 0) {
 				_hand = (unsigned short*) _swapStack[i][n]._obj._pointer;
-				_hand[0] = ((slashRound(_swapStack[i][n]._pos._y) << 0) |
+				_hand[0] = ((slashRound(_swapStack[i][n]._pos._y -
+					_swapStack[i][n]._obj._sprite._offset._y) << 0) |
 					(_swapStack[i][n]._obj._sprite._shape << 14));
-				_hand[1] = ((slashRound(_swapStack[i][n]._pos._x) << 0) |
+				_hand[1] = ((slashRound(_swapStack[i][n]._pos._x -
+					_swapStack[i][n]._obj._sprite._offset._x) << 0) |
 					(_swapStack[i][n]._obj._sprite._size << 14));
 				_hand[2] = ((_swapStack[i][n]._obj._sprite._index << 0) | (1 << 10));
 			}
