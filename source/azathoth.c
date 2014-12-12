@@ -26,7 +26,7 @@ void ScreenLimiter(token* __self) {
 
 	float _bbox_y = __self->_pos._y + __self->_bbox._y + __self->_bbox._height;
 	if (_bbox_y + __self->_vec._speedy > 154 ||
-		__self->_pos._y + __self->_bbox._y + __self->_vec._speedy < 0) {
+		__self->_pos._y + __self->_bbox._y + __self->_vec._speedy < 20) {
 		__self->_vec._speedy = 0;
 	}
 }
@@ -140,7 +140,7 @@ void playerScript(token* __self) {
 
 void mobScript(token* __self) {
 	if (gameState == 2) {
-		if (__self->_pos._y > 40) {
+		if (__self->_pos._y > 10) {
 			__self->_swich = false;
 		}
 	
