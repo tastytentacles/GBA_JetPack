@@ -172,11 +172,11 @@ void setMapPoint_L(int _x, int _y, tileProfile* _tile, int palette, int memBlock
 
 void drawNumber(int _x, int _y, uint _numb, int _displayLen, int memBlock){
 	int n;
-	uint _readhead = 0;
+	uint _readhead = 1;
 	for (n = 0; n < _displayLen; n++) {
-		uint _box = _numb / (_readhead ^ 10);
-		setMapPoint(_x + n, _y, 9 + _box, 1, memBlock);
-		_readhead += 1;
+		uint _box = _numb / (_readhead) % 10;
+		setMapPoint((_displayLen - 1) + _x - n, _y, 9 + _box, 1, memBlock);
+		_readhead *= 10;
 	}
 }
 
@@ -242,7 +242,7 @@ void addMOB() {
 extern void eBallScript(token* __self);
 void addEBall(uint _x, uint _y) {
 	uint tID = sortAddToken(1, _x, _y);
-	// t_setSprite(tID, 1, 100, 0, 0);
+	t_setSprite(tID, 1, 100, 0, 0);
 	t_addScript(tID, 1, eBallScript);
 	bulletStack[tID]._vec._speedx = -1.45;
 	t_setSpriteOffset(tID, 1, 4, 4);

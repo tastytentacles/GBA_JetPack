@@ -31,6 +31,16 @@ void ScreenLimiter(token* __self) {
 	}
 }
 
+void ScreenLimiterB(token* __self) {
+	if (__self->_pos._x + __self->_bbox._x + __self->_vec._speedx < 0) {
+		__self->_vec._speedx = 0;
+	}
+
+	if (__self->_pos._y + __self->_bbox._y + __self->_vec._speedy < 0) {
+		__self->_vec._speedy = 0;
+	}
+}
+
 void playerScript(token* __self) {
 	if (gameState == 1) {
 		if (__self->_pos._x > 32) {
@@ -66,9 +76,14 @@ void playerScript(token* __self) {
 		if (keyUp & KEY_DOWN)
 			{ dpad_down = false; }
 	
-		if (keyDown & KEY_A) {
+		if (keyDown & KEY_A && __self->_tick2 > 20) {
 			addMissile(__self->_pos._x + __self->_firePos._x,
 				__self->_pos._y + __self->_firePos._y);
+			__self->_tick2 = 0;
+		}
+
+		if (__self->_tick2 <= 20) {
+			__self->_tick2++;
 		}
 	
 		__self->_vec._speedy += (dpad_down - dpad_up) * shipSpeed;
@@ -119,7 +134,7 @@ void playerScript(token* __self) {
 			gameState = 0;
 		}
 
-		ScreenLimiter(__self);
+		ScreenLimiterB(__self);
 	}
 }
 
@@ -183,6 +198,8 @@ void mobScript(token* __self) {
 			addSmoke(__self->_pos._x + (rand() % 16) - 8, __self->_pos._y + (rand() % 16) - 8);
 		}
 		
+		playerScore += 10;
+
 		__self->_state = 1;
 	}
 

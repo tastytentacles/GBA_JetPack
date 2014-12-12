@@ -75,12 +75,14 @@ struct token {
 
 	char			_state;
 	uint 			_tick;
+	uint 			_tick2;
 	bool			_swich;
 	bool			_swich2;
 	void			(*_script)(token *);
 };
 
 uint playerScore;
+uint bestScore;
 uint playerLife;
 uint mobCount;
 

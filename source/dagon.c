@@ -146,8 +146,6 @@ void game_logic() {
 		tileProfile scoreText = {9, 1, 5, 1};
 		setMapPoint_L(1, 1, &scoreText, 1, 10);
 		drawNumber(8, 1, playerScore, 8, 10);
-		if (playerScore < 13370)
-			{ playerScore++; }
 
 		if (spawnTick > 100/* && mobCount < 15*/) {
 			addMOB();
@@ -161,6 +159,12 @@ void game_logic() {
 		titleState = 0;
 		titleY = 0;
 		titleSpeed = 0;
+
+		if (bestScore < playerScore) {
+			bestScore = playerScore;
+		}
+
+		playerScore = 0;
 
 		uint nx, ny;
 		for (ny = 0; ny < 32; ny++) {
@@ -204,6 +208,8 @@ void titleScript() {
 		tileProfile title = {20, 0, 12, 8};
 		setMapPoint_L(9, 4, &title, 1, 10);
 		titleState = 1;
+
+		drawNumber(11, 13, bestScore, 8, 10);
 	}
 
 	if (titleState == 1) {
